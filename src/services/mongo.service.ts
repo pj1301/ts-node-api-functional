@@ -1,7 +1,6 @@
 import Debug from 'debug';
 import { MongoClient } from 'mongodb';
 import { server } from '../environment/environment';
-import { IUser } from '../interfaces/user';
 
 const debug: Debug.Debugger = Debug('app:mongo.service');
 const mongodOpt = { useUnifiedTopology: true };
@@ -14,10 +13,10 @@ const findRecord = async (db: string, collection: string, query: any): Promise<a
   return result;
 } 
 
-const createRecord = async (db: string, collection: string, user: IUser): Promise<any> => {
+const createRecord = async (db: string, collection: string, data: any): Promise<any> => {
   const client = await MongoClient.connect(apiUrl, mongodOpt).catch(error => debug(error));
   if (!client) return { error: 'There was an error' };
-  const result = await client.db(db).collection(collection).insertOne(user)
+  const result = await client.db(db).collection(collection).insertOne(data)
   return result;
 }
 
