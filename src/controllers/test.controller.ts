@@ -7,10 +7,10 @@ const testRoutes: Router = express.Router();
 const router = (): Router => {
 
   testRoutes.route('/')
-   .get((req: Request, res: Response) => {
+   .get((req: Request, res: Response): void => {
      res.send({ msg: 'Server online, Testroutes GET working' });
    })
-   .post((req: Request, res: Response) => {
+   .post((req: Request, res: Response): void => {
     res.send({ msg: 'Server online, Testroutes POST working', data: req.body })
   })
 
