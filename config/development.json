@@ -1,0 +1,7 @@
+{
+    "mongoDB": {
+        "url": "mongo://test-db:27017",
+        "name": "test"
+    },
+    "allowedOrigins": []
+}

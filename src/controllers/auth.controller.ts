@@ -1,12 +1,13 @@
 import Debug from 'debug';
 import express, { Router, Request, Response } from 'express';
 import { findRecord, createRecord } from '../services/mongo.service';
-import { server } from '../environment/environment';
 import { encrypt, decrypt } from '../services/encryption.service';
 import { generateToken, deciferToken } from '../services/jwt.service';
+import config from 'config';
 
 const debug: Debug.Debugger = Debug('app:auth.controller');
-const { dbName, userCollection } = server;
+const dbName = config.get("mongoDB.name");
+const userCollection = "users";
 const authRoutes: Router = express.Router();
 
 const router = (): Router => {
