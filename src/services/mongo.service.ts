@@ -4,7 +4,7 @@ import config from 'config';
 
 const debug: Debug.Debugger = Debug('app:mongo.service');
 const mongodOpt = { useUnifiedTopology: true };
-const mongoUrl = config.get("mongoDB.url");
+const mongoUrl: string = config.get("mongoDB.url");
 
 const findRecord = async (db: string, collection: string, query: any): Promise<any> => {
   const client = await MongoClient.connect(mongoUrl, mongodOpt).catch(error => debug(error));

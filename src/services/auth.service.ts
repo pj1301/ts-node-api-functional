@@ -5,7 +5,7 @@ import { getAllRecords } from '../services/mongo.service';
 import config from 'config';
 
 const debug = Debug('app:auth.service');
-const dbName = config.get("mongoDB.name");
+const dbName: string = config.get("mongoDB.name");
 const userCollection = "users";
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {

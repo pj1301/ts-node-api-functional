@@ -2,15 +2,15 @@ import Debug from 'debug';
 import express, { Router, Request, Response } from 'express';
 import { findRecord, createRecord } from '../services/mongo.service';
 import { encrypt, decrypt } from '../services/encryption.service';
-import { generateToken, deciferToken } from '../services/jwt.service';
+import { generateToken } from '../services/jwt.service';
 import config from 'config';
 
 const debug: Debug.Debugger = Debug('app:auth.controller');
-const dbName = config.get("mongoDB.name");
+const dbName: string = config.get("mongoDB.name");
 const userCollection = "users";
 const authRoutes: Router = express.Router();
 
-const router = (): Router => {
+export default (): Router => {
 
   authRoutes.route('/register')
     .post(async (req: Request, res: Response): Promise<any> => {
@@ -36,5 +36,3 @@ const router = (): Router => {
 
   return authRoutes;
 }
-
-export { router };

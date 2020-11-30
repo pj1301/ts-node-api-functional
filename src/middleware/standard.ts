@@ -1,14 +1,14 @@
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import config from 'config';
 
-const allowedOrigins = config.get("allowedOrigins");
-const corsOpt = {
+const allowedOrigins: Array<string> = config.get("allowedOrigins");
+const corsOpt: CorsOptions = {
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin)) return callback(null, true);
+        if (origin && allowedOrigins.includes(origin)) return callback(null, true);
         if (process.env.NODE_ENV === 'development' && !origin) return callback(null, true);
         return callback(new Error('Blocked by CORS policy'));
     }
