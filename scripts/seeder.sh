@@ -1,0 +1,1 @@
+mongoimport --db test -c users --file /usr/test-db/seeds/admin.json

@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  node:
+    container_name: test-api
+    build: .
+    ports:
+      - 2000:2000
+    volumes:
+      - .:/usr/node-api
+      - /usr/node-api/node_modules
+    links:
+      - mongo
+
+  mongo:
+    container_name: test-db
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ./seeds:/usr/test-db/seeds
+      - ./scripts:/docker-entrypoint-initdb.d

@@ -1,39 +1,50 @@
 import Debug from 'debug';
-import express, { Router, Request, Response } from 'express';
+import express, { Router, Request, Response, NextFunction } from 'express';
 import { findRecord, createRecord } from '../services/mongo.service';
-import { server } from '../environment/environment';
 import { encrypt, decrypt } from '../services/encryption.service';
-import { generateToken, deciferToken } from '../services/jwt.service';
+import { generateToken } from '../services/jwt.service';
+import config from 'config';
 
 const debug: Debug.Debugger = Debug('app:auth.controller');
-const { dbName, userCollection } = server;
+const dbName: string = config.get('mongoDB.name');
+const userCollection = 'users';
 const authRoutes: Router = express.Router();
 
-const router = (): Router => {
+export default (): Router => {
 
   authRoutes.route('/register')
-    .post(async (req: Request, res: Response): Promise<any> => {
+    .post(async (req: Request, res: Response, next: NextFunction): Promise<any> => {
       const { username, password } = req.body;
       const user = await findRecord(dbName, userCollection, { username });
-      if (user) return res.send('User exists, please sign in');
+      if (user) {
+        next(new Error('User exists, please sign in'));
+        return;
+      }
       const encryptedPw = await encrypt(password);
-      if (!encryptedPw) return res.send('An error occurred whilst encrypting the password');
+      if (!encryptedPw) {
+        next(new Error('An error occurred whilst encrypting the password'));
+        return;
+      }
       const newUser = { username, password: encryptedPw };
       const dbRecord = await createRecord(dbName, userCollection, newUser);
-      res.send(dbRecord ?? 'An error occurred');
+      dbRecord ? res.status(200).send(dbRecord) : next(new Error('Registration Failed'));
     })
 
   authRoutes.route('/login')
-    .post(async (req: Request, res: Response): Promise<any> => {
+    .post(async (req: Request, res: Response, next: NextFunction): Promise<any> => {
       const { username, password } = req.body;
       const userRecord = await findRecord(dbName, userCollection, { username });
-      if (!userRecord) return res.send('User credentials incorrect');
-      if (!await decrypt(password, userRecord.password)) return res.send('User credentials incorrect');
+      if (!userRecord) {
+        next(new Error('User credentials incorrect'));
+        return;
+      }
+      if (!await decrypt(password, userRecord.password)) {
+        next(new Error('User credentials incorrect'));
+        return;
+      }
       const token = await generateToken(userRecord._id.toHexString());
-      res.send(token);
+      token ? res.status(200).send({token}) : next(new Error('Login failed'));
     })
 
   return authRoutes;
 }
-
-export { router };
