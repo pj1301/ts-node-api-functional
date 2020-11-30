@@ -11,7 +11,7 @@ const userCollection = "users";
 const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   const header = req.get('Authorization');
   if (!header) return res.send('No token provided');
-  const { id } = deciferToken(header);
+  const { id } = deciferToken(header.replace(/Bearer /g, ''));
   const allUsers = await getAllRecords(dbName, userCollection);
   if (allUsers[0].error) return res.send('An error occurred');
   const ids = allUsers.map(user => user._id.toHexString());

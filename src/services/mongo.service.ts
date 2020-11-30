@@ -1,5 +1,5 @@
 import Debug from 'debug';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectID } from 'mongodb';
 import config from 'config';
 
 const debug: Debug.Debugger = Debug('app:mongo.service');
@@ -27,4 +27,11 @@ const getAllRecords = async (db: string, collection: string): Promise<any[]> => 
   return result;
 }
 
-export { findRecord, createRecord, getAllRecords };
+const deleteRecord = async(db: string, collection: string, locator: Record<string, ObjectID>) => {
+  const client = await MongoClient.connect(mongoUrl, mongodOpt).catch(error => debug(error));
+  if (!client) return { error: 'There was an error' };
+  const result = await client.db(db).collection(collection).deleteOne(locator)
+  return result;
+}
+
+export { findRecord, createRecord, getAllRecords, deleteRecord };

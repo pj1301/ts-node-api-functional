@@ -6,8 +6,8 @@ import { generateToken } from '../services/jwt.service';
 import config from 'config';
 
 const debug: Debug.Debugger = Debug('app:auth.controller');
-const dbName: string = config.get("mongoDB.name");
-const userCollection = "users";
+const dbName: string = config.get('mongoDB.name');
+const userCollection = 'users';
 const authRoutes: Router = express.Router();
 
 export default (): Router => {
